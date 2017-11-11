@@ -12,6 +12,7 @@ class Like extends Mode
     public function buildWhereRawString(Builder $builder)
     {
         $queryString = '';
+        $fields = [];
 
         $this->fields = $this->modelService->setModel($builder->model)->getSearchableFields();
 
@@ -20,10 +21,11 @@ class Like extends Mode
         $queryString .= '(';
 
         foreach ($this->fields as $field) {
-            $queryString .= "`$field` LIKE ? OR ";
+	        $fields[] = "`$field` LIKE ? ";
         }
 
-        $queryString = trim($queryString, 'OR ');
+        $queryString .= implode( 'OR ', $fields);
+
         $queryString .= ')';
 
         return $queryString;
